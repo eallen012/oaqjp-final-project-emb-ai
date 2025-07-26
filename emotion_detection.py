@@ -16,8 +16,11 @@ def emotion_detector(text_to_analyze):
     print("Sending request...")
 
     try:
-        req = requests.post(url=url, headers=headers, json=json.dumps(json_data), timeout=10)
-        return req.text
+        req = requests.post(url=url, headers=headers, json=json_data, timeout=10)
+        response = json.loads(req.text)
+        emotions = response["emotionPredictions"][0]["emotion"]
+        emotions["dominant_emotion"] = max(emotions, key=emotions.get)
+        return emotions
     except Exception as e: 
         print("Request failed")
         print(e)
